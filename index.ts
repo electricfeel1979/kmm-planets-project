@@ -1,9 +1,12 @@
-const { parse } = require('csv-parse');
-const fs = require('fs');
+import { Planet } from './types';
 
-const habitablePlanets = [];
+import {parse} from 'csv-parse';
+import fs from 'fs';
 
-const isHabitablePlanet = (planet) => {
+
+const habitablePlanets: Planet[] = [];
+
+const isHabitablePlanet = (planet: Planet) => {
 	return planet['koi_disposition'] === 'CONFIRMED'
         && planet['koi_insol'] > 0.36
         && planet['koi_insol'] < 1.11
@@ -15,13 +18,14 @@ fs.createReadStream('kepler_data.csv')
 		comment: '#',
 		columns: true
 	}))
-	.on('data', data => {
+	.on('data', (data: Planet) => {
 		if (isHabitablePlanet(data)) habitablePlanets.push(data);
 	})
-	.on('error', (err) => {
+	.on('error', (err: string) => {
 		console.log(err);
 	})
 	.on('end', () => {
+		console.log(habitablePlanets);
 		console.log(habitablePlanets.map(planet => {
 			return planet['kepler_name'];
 		}));
